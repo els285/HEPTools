@@ -1,4 +1,9 @@
-# Rebinning histograms
+'''
+Ethan Simpson December 6th 2021
+Rebinning two-dimensional ROOT histograms
+Function requires: - original ROOT histogram - new axes 
+Note that the new axes must a subset of the original axes.
+'''
 
 from ROOT import TH2D
 import numpy as np
@@ -6,7 +11,10 @@ import numpy as np
 from functools import wraps
 from time import process_time
 
+# This turns a ROOT TAxis object into a numpy array
+get_axis = lambda hist_axis: np.asarray([hist_axis.GetBinUpEdge(binn) for binn in range(0,hist_axis.GetNbins()+1)])
 
+# Decorator for measuring execution time of the rebin2D function - not necessary
 def measure_time(func):
     @wraps(func)
     def _time_it(*args, **kwargs):
@@ -21,7 +29,7 @@ def measure_time(func):
 
     return _time_it
 
-
+# Main function
 @measure_time
 def rebin2D(hist2D,Xaxis,Yaxis):
 
@@ -38,13 +46,13 @@ def rebin2D(hist2D,Xaxis,Yaxis):
 
     for i in range(0,len(oXaxis_split)-1):
         for j in range(0,len(oYaxis_split)-1):
-            # i,j are the set bin content indices
+
             new_bin_total = 0
             for s in range(oXaxis_split[i],oXaxis_split[i+1]):
                 for t in range(oYaxis_split[j],oYaxis_split[j+1]):
                     new_bin_total += hist2D.GetBinContent(s+1,t+1)
             
             new_hist2D.SetBinContent(i+1,j+1,new_bin_total)
-            
+
     return new_hist2D
 
