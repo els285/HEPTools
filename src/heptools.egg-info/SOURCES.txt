@@ -3,6 +3,10 @@ README.md
 pyproject.toml
 setup.cfg
 setup.py
+src/heptools/LHE2Root.py
+src/heptools/__init__.py
+src/heptools/inspectROOT.py
+src/heptools/rebin.py
 src/heptools.egg-info/PKG-INFO
 src/heptools.egg-info/SOURCES.txt
 src/heptools.egg-info/dependency_links.txt
