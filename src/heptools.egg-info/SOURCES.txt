@@ -11,10 +11,10 @@ src/heptools.egg-info/PKG-INFO
 src/heptools.egg-info/SOURCES.txt
 src/heptools.egg-info/dependency_links.txt
 src/heptools.egg-info/top_level.txt
-src/heptools/HistogramPlotting/FromROOT.py
-src/heptools/HistogramPlotting/FromSaved.py
-src/heptools/HistogramPlotting/FromTree.py
-src/heptools/HistogramPlotting/Plotting.py
-src/heptools/HistogramPlotting/PyHist_Class.py
-src/heptools/HistogramPlotting/PyHist_Class_2D.py
-src/heptools/HistogramPlotting/__init__.py
+src/heptools/histplot/FromROOT.py
+src/heptools/histplot/FromSaved.py
+src/heptools/histplot/FromTree.py
+src/heptools/histplot/Plotting.py
+src/heptools/histplot/PyHist_Class.py
+src/heptools/histplot/PyHist_Class_2D.py
+src/heptools/histplot/__init__.py

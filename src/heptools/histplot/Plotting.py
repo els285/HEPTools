@@ -8,7 +8,7 @@ import uproot
 # from matplotlib.lines import Line2D
 
 
-from PyHist_Class import PyHist,Histogram_Wrapper
+from heptools.histplot.PyHist_Class import PyHist,Histogram_Wrapper
 
 
 class HEP_Plot:
