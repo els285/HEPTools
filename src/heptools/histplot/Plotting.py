@@ -109,7 +109,7 @@ class HEP_Plot:
         x_binning = PH.Bin_Edges
         values    = np.concatenate((PH.Bin_Values,np.asarray([0])), axis=0) 
 
-        print(PH.colour)
+        # print(PH.colour)
 
         ax.plot(x_binning, values,drawstyle="steps-post",color=PH.colour,label=PH.Name,linewidth=PH.linewidth)#Hist_Wrapper.linewidth)
         ax.vlines(x_binning[0],0,values[0],color=PH.colour,linewidth=PH.linewidth)#Hist_Wrapper.linewidth)
@@ -172,6 +172,9 @@ class HEP_Plot:
                             color=PH.colour,alpha=0.2)
 
         return ax
+
+
+    # def 
 
 
 
@@ -310,6 +313,24 @@ class Ratio_Plot_ROOT(HEP_Plot):
         for HW in self.list_of_ratio_histograms:
             plotting_function(rax,HW)
 
+
+        # Compute extrema for ratio plot sizing
+        extrema = [(min(HW.Bin_Values) , max(HW.Bin_Values)) for HW in self.list_of_ratio_histograms]
+        maxY = max([a[1] for a in extrema])
+        minY = min([a[0] for a in extrema])
+        symmetric = True
+        scale = 1.25
+        if symmetric:
+            max_value = max([abs(minY),abs(maxY)])
+            sf = abs(1 - max_value)
+            new_max = scale*sf
+
+        newYmin = 1-new_max
+        newYmax = 1+new_max 
+
+        rax.set_ylim([newYmin,newYmax])
+
+
         return ax,rax
 
 
@@ -351,8 +372,8 @@ class Ratio_Plot_ROOT(HEP_Plot):
 
         identical = False if plotting_function==self.One_Filled_Rest_Line else True
 
-        print(identical)
-        input()
+        # print(identical)
+        # input()
 
         if identical:
             ax,rax = self.Identical_Plotting(ax,rax,plotting_function)

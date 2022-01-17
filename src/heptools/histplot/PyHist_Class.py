@@ -25,7 +25,7 @@ class PyHist:
 
         # Plot meta-data
         self.colour       = kwargs["colour"]       if "colour"       in kwargs else "blue"
-        self.linewidth    = kwargs["linewdith"]    if "linewdith"    in kwargs else 2
+        self.linewidth    = kwargs["linewdith"]    if "linewdith"    in kwargs else 1.5
         self.legend_entry = kwargs["legend_entry"] if "legend_entry" in kwargs else ""
 
 
