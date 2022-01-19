@@ -313,20 +313,24 @@ class Ratio_Plot_ROOT(HEP_Plot):
         for HW in self.list_of_ratio_histograms:
             plotting_function(rax,HW)
 
-
+        # print(HW.__dict__)
+        # input()
         # Compute extrema for ratio plot sizing
         extrema = [(min(HW.Bin_Values) , max(HW.Bin_Values)) for HW in self.list_of_ratio_histograms]
+        largest_error = max(HW.Bin_Errors)
         maxY = max([a[1] for a in extrema])
         minY = min([a[0] for a in extrema])
-        symmetric = True
-        scale = 1.25
-        if symmetric:
-            max_value = max([abs(minY),abs(maxY)])
-            sf = abs(1 - max_value)
-            new_max = scale*sf
+        newYmin = minY - largest_error
+        newYmax = maxY + largest_error
+        # symmetric = True
+        # scale = 1.25
+        # if symmetric:
+        #     max_value = max([abs(minY),abs(maxY)])
+        #     sf = abs(1 - max_value)
+        #     new_max = scale*sf
 
-        newYmin = 1-new_max
-        newYmax = 1+new_max 
+        # newYmin = 1-new_max
+        # newYmax = 1+new_max 
 
         rax.set_ylim([newYmin,newYmax])
 
