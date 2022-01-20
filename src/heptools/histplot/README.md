@@ -69,4 +69,19 @@ p.Initialise_Plot_Design("ATLAS")
 
 When using the filled histogram style, which is not build around a step plot, a legend is not automatically generated.
 
+# 2D Response/Migration Matrix Plots
 
+A worked example:
+```python3
+from ROOT import TFile
+from heptools.histplot import PyHist_Class_2D 
+import matplotlib.pyplot as plt
+
+_file0 = TFile('SpinCorrTest_2L_emu_os_2b85ex_cos_phi_PDF set = 90907_parton_migration.root',"READ")
+hist = _file0.Get('SpinCorrTest_2L_emu_os_2b85ex_cos_phi_PDF set = 90907_parton_migration')
+
+pyhist = PyHist_Class_2D.Histogram_Wrapper(hist,"Name")
+fig,a,b=pyhist.plot_2d(normed=True)
+plt.show()
+
+```
