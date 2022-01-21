@@ -10,11 +10,18 @@ from heptools.eft.ParsefromJSON import parse_from_json
 from heptools.eft.Plot_1D_Posterior import _1D_LHC_Posterior_Plot as LHC_p1D
 
 
+# This is a hack for finding the correct path to the julia files
+# Not sure the best practice for calling julia files when they are not in the current working directory
+# Hopefully heptools.__file__ always gives the r=absolute path to the package; the location within the package should not change
+
+
+import heptools
+julia_module_filepath = heptools.__file__.replace("__init__.py","eft/")
 
 def fetch_1d_posterior(filename):
 
-    get_sample = Main.include("parse_sample_function2.jl")
-    get_weights = Main.include("parse_weights.jl")
+    get_sample  = Main.include(julia_module_filepath+"parse_sample_function2.jl")
+    get_weights = Main.include(julia_module_filepath+"parse_weights.jl")
 
     # Requires the Wilson coefficients to be in the order they are in runEFT...jl
 
