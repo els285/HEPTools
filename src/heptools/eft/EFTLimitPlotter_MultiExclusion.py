@@ -11,7 +11,7 @@ import pandas as pd
 import mplhep as hep
 
 
-from EFToperators import dic_of_EFT_operators as dEFT
+from heptools.eft.EFToperators import dic_of_EFT_operators as dEFT
 """
 Structure of the DataFrame
 WC: Linear, Linear+Quadratic, ...
