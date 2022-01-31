@@ -4,6 +4,15 @@ A collection of tools for high-energy particle physics analyses.
 
 **Crucial: ROOT is required to be installed and compatible with Python3. I only have ROOT built for Python3.6**
 
+
+## Installation
+
+Install via
+```
+python3.6 -m pip install git+https://github.com/ethansimpson285/HEPTools
+```
+
+
 What follows is a descrption of the various tools...
 
 
