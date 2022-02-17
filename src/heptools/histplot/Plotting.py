@@ -10,6 +10,9 @@ import uproot
 
 from heptools.histplot.PyHist_Class import PyHist,Histogram_Wrapper
 
+# from ROOT import TH1
+# TH1.SetDefaultSumw2()
+
 
 class HEP_Plot:
 
@@ -174,12 +177,6 @@ class HEP_Plot:
         return ax
 
 
-    # def 
-
-
-
-
-
     def __init__(self,plot_title,**kwargs):
         self.plot_title = plot_title
         self.list_of_histograms = []
@@ -224,8 +221,8 @@ class HEP_Plot:
 
 
 
-class Single_Plot(HEP_Plot):
-    pass
+# class Single_Plot(HEP_Plot):
+#     pass
 
 
 
@@ -245,6 +242,7 @@ class Ratio_Plot_ROOT(HEP_Plot):
 
     @staticmethod
     def Compute_Ratio(ROOT_hist_numer,ROOT_hist_denom):
+
         d_hist = ROOT_hist_numer.Clone()
         d_hist.Divide(ROOT_hist_numer,ROOT_hist_denom)
 
@@ -317,11 +315,17 @@ class Ratio_Plot_ROOT(HEP_Plot):
         # input()
         # Compute extrema for ratio plot sizing
         extrema = [(min(HW.Bin_Values) , max(HW.Bin_Values)) for HW in self.list_of_ratio_histograms]
+        # print(extrema)
+        # input()
         largest_error = max(HW.Bin_Errors)
+        # print(largest_error)
+        # input()
         maxY = max([a[1] for a in extrema])
         minY = min([a[0] for a in extrema])
-        newYmin = minY - largest_error
-        newYmax = maxY + largest_error
+        newYmin = (minY - largest_error) if plotting_function!=self.Step_Line else minY
+        newYmax = (maxY + largest_error) if plotting_function!=self.Step_Line else maxY
+        newYmin = 1 - abs(newYmin-1)*1.15
+        newYmax = 1 + abs(newYmax-1)*1.15   
         # symmetric = True
         # scale = 1.25
         # if symmetric:
@@ -329,8 +333,6 @@ class Ratio_Plot_ROOT(HEP_Plot):
         #     sf = abs(1 - max_value)
         #     new_max = scale*sf
 
-        # newYmin = 1-new_max
-        # newYmax = 1+new_max 
 
         rax.set_ylim([newYmin,newYmax])
 
