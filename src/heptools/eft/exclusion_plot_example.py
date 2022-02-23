@@ -5,9 +5,6 @@ from heptools.eft.EFTLimitPlotter_MultiExclusion import ATLAS_HiggsStyle_EFT_Plo
 
 x = auto_parse("/home/ethan/EFTfitterSpinCorr.jl/results_ptz_laurynas")
 
-# print(x)
-# input()
-
 
 y = LHC_EFT_Plot(df=x,experiment="ATLAS",#to_plot="all",
                 to_plot=["Linear+Quadratic (Marg.)","Linear (Marg.)" ,"Linear+Quadratic (Indp.)"],
@@ -29,10 +26,10 @@ y.additional_label(r"SMEFT $\Lambda = 1$ TeV")
 
 # ax.set_xlim(-15,20)
 
+fig.set_size_inches(10, 6)
 
 plt.show()
 input()
 
-fig.set_size_inches(10, 6)
 
 # plt.savefig("lhc_plot.png",dpi=300)

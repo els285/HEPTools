@@ -120,7 +120,7 @@ class Histogram_Wrapper:
         return df_og,df_norm
 
 
-    def plot_2d(self,normed):
+    def plot_2d(self,normed,**kwargs):
 
         """
         Makes migration matrix ATLAS plot
@@ -136,9 +136,14 @@ class Histogram_Wrapper:
         else:
             pyhist = self.pyhist
 
+
+        # Plotting parameters
+        cmap = kwargs["cmap"] if "cmap" in kwargs else "viridis"
+
+        # Making plot
         fig, ax = plt.subplots()
         X, Y = np.meshgrid(pyhist.Bin_Edges[0],pyhist.Bin_Edges[1])
-        pc = ax.pcolormesh(pyhist.Bin_Edges[0],pyhist.Bin_Edges[1], pyhist.Bin_Values)#,cmap="")
+        pc = ax.pcolormesh(pyhist.Bin_Edges[0],pyhist.Bin_Edges[1], pyhist.Bin_Values,cmap=cmap)
 
         hep.atlas.text("Internal",ax=ax,loc=0)
 

@@ -30,7 +30,6 @@ def generate_symmetrised_hist(hist,NOMINAL_hist):
 
 
 
-
 def plot_up_down_variation(NOMINAL_hist,UP_hist,DOWN_hist,**kwargs):
 
 

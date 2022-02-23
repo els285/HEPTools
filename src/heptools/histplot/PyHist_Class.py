@@ -5,9 +5,9 @@ import os
 import numpy as np
 import pickle
 
+# TH1.SetDefaultSumw2()
 
-# from dataclasses import dataclass
-# @dataclass
+
 
 class PyHist:
     """ Basic wrapper for ROOT histogram 
