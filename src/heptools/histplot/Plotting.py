@@ -397,11 +397,11 @@ class Ratio_Plot_ROOT(HEP_Plot):
         ax.legend(handles, labels, loc=loc,prop={'size': 18})
 
 
+
 def standard_ATLAS_ratio_plot(list_of_histograms,**kwargs):
 
     divisor   = kwargs["divisor"]   if "divisor"   in kwargs else list_of_histograms[0]
     normalise = kwargs["normalise"] if "normalise" in kwargs else True
-
 
 
     p = Ratio_Plot_ROOT("A Plot",list_of_histograms=list_of_histograms,divisor=divisor,normalise=normalise)
@@ -409,23 +409,6 @@ def standard_ATLAS_ratio_plot(list_of_histograms,**kwargs):
 
     plt,ax,rax = p.Make_Ratio_Plot("line-errorbar")
     p.Add_ATLAS_Label("Internal")
-
-    return p,plt
-
-
-def ATLAS_ratio_plot_from_ROOT(list_of_ROOT_histograms,**kwargs):
-
-    """ Pass a list of ROOT histograms and generate a ratio plot"""
-
-    import matplotlib.pyplot as plt
-    default_colours = plt.rcParams['axes.prop_cycle'].by_key()['color']    
-
-    list_of_histograms = []
-    for ROOThist,col in zip(list_of_ROOT_histograms,default_colours):
-        x=Histogram_Wrapper(ROOThist, name = ROOThist.GetName()  ,colour=col) 
-        list_of_histograms.append(x)
-
-    p,plt = standard_ATLAS_ratio_plot(list_of_histograms,**kwargs)
 
     return p,plt
 
