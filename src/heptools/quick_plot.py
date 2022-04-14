@@ -17,7 +17,7 @@ def quick2D(ROOT_histogram,**kwargs):
     return pyhist,fig,ax,pc
 
 
-def ATLAS_1D(input_histograms,**kwargs):
+def atlas_1D_plot(input_histograms,**kwargs):
 
     """ Pass a list of ROOT histograms and generate a plot"""
 
@@ -41,7 +41,7 @@ def ATLAS_1D(input_histograms,**kwargs):
     return p,plt
 
 
-def ATLAS_ratio_1D(list_of_ROOT_histograms,**kwargs):
+def atlas_1D_ratio_plot(list_of_ROOT_histograms,**kwargs):
 
     """ Pass a list of ROOT histograms and generate a ratio plot"""
 
