@@ -23,6 +23,13 @@ What follows is a descrption of the various tools...
 * Functionality for generating various effective field theory interpretation plots.
 (All of the above are matplotlib based, with interest in developing online tools - likely through `plotly` - down-the-line.
 
+### Single Histogram Plotting
+This is designed to be as simple as possible. Do the following to plot a ROOT histogram:
+```python3
+from heptools.quick_plot import ATLAS_1D 
+p,plt = ATLAS_1D(ROOT_hist)
+```
+
 
 ## Parsers
 
