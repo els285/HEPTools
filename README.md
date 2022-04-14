@@ -26,9 +26,10 @@ What follows is a descrption of the various tools...
 ### Single Histogram Plotting
 This is designed to be as simple as possible. Do the following to plot a ROOT histogram:
 ```python3
-from heptools.quick_plot import ATLAS_1D 
-p,plt = ATLAS_1D(ROOT_hist)
+from heptools.quick_plot import atlas_1D_plot 
+p,plt = atlas_1D_plot(ROOT_hist)
 ```
+Pass a list of histograms to plot them on top of one another: `atlas_1D_plot([hist1,hist2,hist3])`.
 
 
 ## Parsers
