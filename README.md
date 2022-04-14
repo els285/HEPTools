@@ -31,6 +31,16 @@ p,plt = atlas_1D_plot(ROOT_hist)
 ```
 Pass a list of histograms to plot them on top of one another: `atlas_1D_plot([hist1,hist2,hist3])`.
 
+For greater control, you can generate the `Histogram_Wrapper` objects yourself before plotting.
+
+### Ratio Plots
+The analogous, simple ratio plotting script is:
+```python3
+from heptools.quick_plot import atlas_1D_ratio_plot
+p,plt = atlas_1D_ratio_plot([hist1,hist2]),divisor=hist1)
+```
+If no `divisor` is specified, the first histogram in the list is taken as the divisor.
+
 
 ## Parsers
 
