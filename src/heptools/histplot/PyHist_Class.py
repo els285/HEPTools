@@ -83,11 +83,12 @@ class Histogram_Wrapper:
 
         # Plotting information
         self.legend_entry       = kwargs["legend_entry"]     if "legend_entry"      in kwargs else ""
-        self.colour             = kwargs["colour"]           if "colour"            in kwargs else "black"
+        self.colour             = kwargs["colour"]           if "colour"            in kwargs else None
         self.linewidth          = kwargs["linewidth"]        if "linewidth"         in kwargs else 2
 
         # ROOT histograms
         self.UnNorm_ROOT_hist = ROOT_hist
+
 
         # Unnormalised Hist wrapper
         self.UnNorm_PyWrap_Hist = self.Create_Wrapper(ROOT_hist,self.name+"_Unnormalised",

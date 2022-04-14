@@ -75,7 +75,6 @@ class HEP_Plot:
 
 
 
-
     def Initialise_Plot_Design(self,design,**kwargs):
 
         self.plot_design = design
@@ -112,7 +111,7 @@ class HEP_Plot:
         x_binning = PH.Bin_Edges
         values    = np.concatenate((PH.Bin_Values,np.asarray([0])), axis=0) 
 
-        # print(PH.colour)
+
 
         ax.plot(x_binning, values,drawstyle="steps-post",color=PH.colour,label=PH.Name,linewidth=PH.linewidth)#Hist_Wrapper.linewidth)
         ax.vlines(x_binning[0],0,values[0],color=PH.colour,linewidth=PH.linewidth)#Hist_Wrapper.linewidth)
@@ -139,9 +138,7 @@ class HEP_Plot:
 
         ax.fill_between(x_binning,values,step="post", alpha=0.4,color=PH.colour)
 
-        return ax
-
-        
+        return ax        
 
 
     @staticmethod
@@ -150,7 +147,6 @@ class HEP_Plot:
         """
         For generating a line histogram with uncapped errorbars
         """
-
         ax = HEP_Plot.Step_Line(ax,PH)
 
         ax.errorbar(PH.Bin_Centres,PH.Bin_Values,PH.Bin_Errors,elinewidth=PH.linewidth,ecolor=PH.colour,fmt='',xerr=None,linestyle='')
@@ -213,16 +209,13 @@ class HEP_Plot:
         return plot_dic[plot_type]
 
 
-    # def Legend_Customisation(self,)
 
 
 
 
 
-
-
-# class Single_Plot(HEP_Plot):
-#     pass
+class Single_Plot(HEP_Plot):
+    pass
 
 
 
@@ -246,8 +239,6 @@ class Ratio_Plot_ROOT(HEP_Plot):
         d_hist = ROOT_hist_numer.Clone()
         d_hist.Divide(ROOT_hist_numer,ROOT_hist_denom)
 
-        # d_hist.Draw()
-        # input()
         return d_hist
 
 
@@ -311,8 +302,6 @@ class Ratio_Plot_ROOT(HEP_Plot):
         for HW in self.list_of_ratio_histograms:
             plotting_function(rax,HW)
 
-        # print(HW.__dict__)
-        # input()
         # Compute extrema for ratio plot sizing
         extrema = [(min(HW.Bin_Values) , max(HW.Bin_Values)) for HW in self.list_of_ratio_histograms]
         # print(extrema)
@@ -408,19 +397,37 @@ class Ratio_Plot_ROOT(HEP_Plot):
         ax.legend(handles, labels, loc=loc,prop={'size': 18})
 
 
-def standard_ATLAS_ratio_plot(list_of_histograms,divisor):
+def standard_ATLAS_ratio_plot(list_of_histograms,**kwargs):
 
-    p = Ratio_Plot_ROOT("A Plot",list_of_histograms=list_of_histograms,divisor=divisor,normalise=True)
+    divisor   = kwargs["divisor"]   if "divisor"   in kwargs else list_of_histograms[0]
+    normalise = kwargs["normalise"] if "normalise" in kwargs else True
+
+
+
+    p = Ratio_Plot_ROOT("A Plot",list_of_histograms=list_of_histograms,divisor=divisor,normalise=normalise)
     p.Initialise_Plot_Design("ATLAS")
 
     plt,ax,rax = p.Make_Ratio_Plot("line-errorbar")
-
     p.Add_ATLAS_Label("Internal")
 
     return p,plt
 
 
+def ATLAS_ratio_plot_from_ROOT(list_of_ROOT_histograms,**kwargs):
 
+    """ Pass a list of ROOT histograms and generate a ratio plot"""
+
+    import matplotlib.pyplot as plt
+    default_colours = plt.rcParams['axes.prop_cycle'].by_key()['color']    
+
+    list_of_histograms = []
+    for ROOThist,col in zip(list_of_ROOT_histograms,default_colours):
+        x=Histogram_Wrapper(ROOThist, name = ROOThist.GetName()  ,colour=col) 
+        list_of_histograms.append(x)
+
+    p,plt = standard_ATLAS_ratio_plot(list_of_histograms,**kwargs)
+
+    return p,plt
 
 
 
