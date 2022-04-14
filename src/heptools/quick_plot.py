@@ -1,9 +1,12 @@
 import matplotlib.pyplot as plt
+from ROOT import TH1
 
 from heptools.histplot import PyHist_Class_2D
 from heptools.histplot.PyHist_Class import Histogram_Wrapper
 from heptools.histplot import RatioPlot 
 from heptools.histplot import SinglePlot
+
+
 
 
 def quick2D(ROOT_histogram,**kwargs):
@@ -14,11 +17,19 @@ def quick2D(ROOT_histogram,**kwargs):
     return pyhist,fig,ax,pc
 
 
-def ATLAS_1D(list_of_ROOT_histograms,**kwargs):
+def ATLAS_1D(input_histograms,**kwargs):
 
     """ Pass a list of ROOT histograms and generate a plot"""
+
     import matplotlib.pyplot as plt
     default_colours = plt.rcParams['axes.prop_cycle'].by_key()['color']    
+
+    if isinstance(input_histograms,TH1):
+        list_of_ROOT_histograms = [input_histograms]
+    elif isinstance(input_histograms,list):
+        list_of_ROOT_histograms = input_histograms
+    else:
+        print("Histogram input must be Histogram_Wrapper class or list of Histogram_Wrappers")
 
     list_of_histograms = []
     for ROOThist,col in zip(list_of_ROOT_histograms,default_colours):

@@ -1,6 +1,8 @@
 
 import matplotlib.pyplot as plt
 from heptools.histplot.Plotting import HEP_Plot
+from heptools.histplot.PyHist_Class import Histogram_Wrapper
+
 
 class Single_Plot(HEP_Plot):
     def __init__(self,plot_title,**kwargs):
@@ -12,15 +14,22 @@ class Single_Plot(HEP_Plot):
         fig, ax = plt.subplots()
         self.axes = [ax]
 
-        for PH in self.list_of_histograms:
-            HW = PH.Norm_PyWrap_Hist if self.Normalised else PH.UnNorm_PyWrap_Hist
-            plotting_function(ax,HW)
+        for HW in self.list_of_histograms:
+            PH = HW.Norm_PyWrap_Hist if self.Normalised else HW.UnNorm_PyWrap_Hist
+            plotting_function(ax,PH)
             self.do_legend()
         
         return plt, fig, ax
 
 
-def standard_ATLAS_plot(list_of_histograms,**kwargs):
+def standard_ATLAS_plot(input_histograms,**kwargs):
+
+    if isinstance(input_histograms,Histogram_Wrapper):
+        list_of_histograms = [input_histograms]
+    elif isinstance(input_histograms,list):
+        list_of_histograms = input_histograms
+    else:
+        print("Histogram input must be Histogram_Wrapper class or list of Histogram_Wrappers")
 
     normalise = kwargs["normalise"] if "normalise" in kwargs else True
 
