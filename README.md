@@ -41,6 +41,16 @@ p,plt = atlas_1D_ratio_plot([hist1,hist2]),divisor=hist1)
 ```
 If no `divisor` is specified, the first histogram in the list is taken as the divisor.
 
+### Custom Plots
+Much functionality is wrapped up within the `Single_Plot` and `Ratio_Plot` objects. However, one can use the basic `HEP_Plot` plotting tools with no higher-level functionality:
+
+```python3
+import matplotlib.pyplot as plt
+from heptools.histplot.Plotting import HEP_plot
+fig, ax = plt.subplots()
+ax = HEP_Plot.Line_Filled_Errors(ax,py_truth15.UnNorm_PyWrap_Hist)
+```
+
 
 ## Parsers
 
