@@ -125,6 +125,11 @@ class HEP_Plot:
 
 
     @staticmethod
+    def data_point(ax,PH):
+        pass
+
+
+    @staticmethod
     def Step_Line(ax,PH):
 
         """
@@ -143,7 +148,7 @@ class HEP_Plot:
 
 
     @staticmethod
-    def Filled_Hist(ax,PH):
+    def Filled_Hist(ax,PH,**kwargs):
 
         """
         Basic filled histogram
@@ -151,15 +156,18 @@ class HEP_Plot:
 
         x_binning = PH.Bin_Edges
         values    = np.concatenate((PH.Bin_Values,np.asarray([0])), axis=0) 
+        ax.vlines(x_binning[0],0,values[0],color=PH.colour,linewidth=PH.linewidth,alpha=0)#Hist_Wrapper.linewidth)
 
         # Required for the legend handles
 
         ax.plot(x_binning, values,drawstyle="steps-post",color=PH.colour,label=PH.Name,linewidth=PH.linewidth,alpha=0)#Hist_Wrapper.linewidth)
-        ax.vlines(x_binning[0],0,values[0],color=PH.colour,linewidth=PH.linewidth,alpha=0)#Hist_Wrapper.linewidth)
 
         # The actual histogram filling
-
-        ax.fill_between(x_binning,values,step="post", alpha=0.4,color=PH.colour)
+        if "y2" in kwargs:
+            y2 = kwargs["y2"]
+            ax.fill_between(x_binning,values,y2,step="post", alpha=0.4,color=PH.colour)
+        else:
+            ax.fill_between(x_binning,values,step="post", alpha=0.4,color=PH.colour)
 
         return ax        
 
@@ -194,8 +202,6 @@ class HEP_Plot:
                             color=PH.colour,alpha=0.2)
 
         return ax
-
-
 
 
     def select_plot_type(self,plot_type):

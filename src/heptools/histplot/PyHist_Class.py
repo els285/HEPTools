@@ -30,6 +30,9 @@ class PyHist:
 
 
 
+
+
+
 class Histogram_Wrapper:
     """
     Larger wrapper which contains PyHists, including methods for ROOT->numpy conversion
@@ -70,14 +73,14 @@ class Histogram_Wrapper:
         Bin_Edges   = self.get_bin_edges(hist)
         return PyHist(name,Bin_Values,Bin_Errors,Bin_Centres,Bin_Edges,**kwargs)
 
-    def __init__(self,ROOT_hist,name,**kwargs):
+    def __init__(self,ROOT_hist,**kwargs):
 
         '''
         The Histogram_Wrapper object is for converting ROOT histograms into numpy objects,
             but the data members of the class should contain no ROOT objects.
         '''
         # Meta-data
-        self.name               = name
+        self.name               = kwargs["name"]             if "name"              in kwargs else ROOT_hist.GetName()
         self.observable_type    = kwargs["obs"]              if "obs"               in kwargs else None
         self.file_name          = kwargs["filename"]         if "filename"          in kwargs else None
 
