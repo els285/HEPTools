@@ -48,7 +48,7 @@ Much functionality is wrapped up within the `Single_Plot` and `Ratio_Plot` objec
 import matplotlib.pyplot as plt
 from heptools.histplot.Plotting import HEP_plot
 fig, ax = plt.subplots()
-ax = HEP_Plot.Line_Filled_Errors(ax,py_truth15.UnNorm_PyWrap_Hist)
+ax = HEP_Plot.Line_Filled_Errors(ax,Py_Hist.UnNorm_PyWrap_Hist)
 ```
 
 
