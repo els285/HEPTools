@@ -5,6 +5,7 @@ from heptools.histplot import PyHist_Class_2D
 from heptools.histplot.PyHist_Class import Histogram_Wrapper
 from heptools.histplot import RatioPlot 
 from heptools.histplot import SinglePlot
+from heptools.histplot import DataMCPlot
 
 
 
@@ -56,3 +57,24 @@ def atlas_1D_ratio_plot(list_of_ROOT_histograms,**kwargs):
     p,plt = RatioPlot.standard_ATLAS_ratio_plot(list_of_histograms,**kwargs)
 
     return p,plt
+
+
+
+def atlas_dataMC_plot(list_of_MC_ROOT_histograms,data_ROOT_histogram):
+
+    import matplotlib.pyplot as plt
+    default_colours = plt.rcParams['axes.prop_cycle'].by_key()['color']    
+
+    list_of_MC_histograms = []
+    for ROOThist,col in zip(list_of_MC_ROOT_histograms,default_colours):
+        x=Histogram_Wrapper(ROOThist, name = ROOThist.GetName()  ,colour=col , legend_entry = ROOThist.GetName()) 
+        list_of_MC_histograms.append(x)   
+
+    dataPyHist = Histogram_Wrapper(data_ROOT_histogram)
+
+    p,plt = DataMCPlot.standard_ATLAS_dataMC_plot(list_of_MC_histograms,dataPyHist)
+
+    plt.show()
+    input()
+
+

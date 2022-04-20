@@ -44,8 +44,7 @@ class Data_MC_Plot(HEP_Plot):
     def make_plot(self):
 
         fig,ax = plt.subplots()
-        self.ax = ax
-
+        # self.ax = ax
        
         # Plot the MC as stacked
         for i,hist in enumerate(self.MC_histograms):
@@ -55,7 +54,7 @@ class Data_MC_Plot(HEP_Plot):
                 values = np.concatenate((hist.UnNorm_PyWrap_Hist.Bin_Values,np.asarray([0])), axis=0) 
 
             # Drop the plot
-            self.ax = self.Data_MC_filled_hist(ax,hist.UnNorm_PyWrap_Hist,y1=values,y2=y2)
+            ax = self.Data_MC_filled_hist(ax,hist.UnNorm_PyWrap_Hist,y1=values,y2=y2)
 
             # Update the paramters            
             y2 = values
@@ -65,7 +64,23 @@ class Data_MC_Plot(HEP_Plot):
 
 
         # Plot the data
-        self.ax = self.data_point(ax,self.data_histogram.UnNorm_PyWrap_Hist)
+        ax = self.data_point(ax,self.data_histogram.UnNorm_PyWrap_Hist)
 
-        return plt,fig,ax
+        self.axes = [ax]
+
+        return plt
+
+
+
+def standard_ATLAS_dataMC_plot(list_of_MC_histograms,data_histogram,**kwargs):
+
+    normalise = kwargs["normalise"] if "normalise" in kwargs else True
+
+    p = Data_MC_Plot("ATLAS Data-MC Plot",MC_histograms=list_of_MC_histograms,data_histogram=data_histogram,normalise=normalise)
+    p.Initialise_Plot_Design("ATLAS")
+
+    plt = p.make_plot()
+    p.Add_ATLAS_Label("Internal")
+
+    return p,plt
 
