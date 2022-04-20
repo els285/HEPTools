@@ -9,7 +9,7 @@ class Data_MC_Plot(HEP_Plot):
     def __init__(self,plot_title,MC_histograms,data_histogram,**kwargs):
         super().__init__(plot_title,**kwargs) 
         self.MC_histograms = MC_histograms
-        self.data_histograms = data_histogram
+        self.data_histogram = data_histogram
 
         # Check the binning
         hist0 = self.MC_histograms[0].UnNorm_PyWrap_Hist
@@ -65,21 +65,7 @@ class Data_MC_Plot(HEP_Plot):
 
 
         # Plot the data
-        # self.ax = self.plot_data_point()
+        self.ax = self.data_point(ax,self.data_histogram.UnNorm_PyWrap_Hist)
 
-from ROOT import TH1D
+        return plt,fig,ax
 
-binning = np.linspace(0,4,5)
-h1 = TH1D("h1","",len(binning)-1,binning)
-h2 = TH1D("h2","",len(binning)-1,binning)
-
-for i in range(0,4):
-    h1.SetBinContent(i+1,i+1)
-    h2.SetBinContent(i+1,i+1)
-
-p1 = Hist(h1,colour="red")
-p2 = Hist(h2,colour="blue")
-
-plot1 = Data_MC_Plot("APLOT",MC_histograms=[p1,p2],data_histogram=p2)
-plot1.Initialise_Plot_Design("Seaborn")
-plot1.make_plot()

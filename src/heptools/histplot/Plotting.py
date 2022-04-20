@@ -126,7 +126,12 @@ class HEP_Plot:
 
     @staticmethod
     def data_point(ax,PH):
-        pass
+        x_points = PH.Bin_Centres
+        y_points = PH.Bin_Values
+        ax.scatter(x_points, y_points, label = 'blah',color='k')        
+        ax.errorbar(x_points,y_points,yerr=PH.Bin_Errors,ls='none',color='k')
+
+        return ax
 
 
     @staticmethod
