@@ -239,9 +239,6 @@ class HEP_Plot:
         if all([hist.legend_entry is not None for hist in self.list_of_histograms]):
             labels = [hist.legend_entry for hist in self.list_of_histograms]     
      
-
-        print(labels)
-        input()
         ax.legend(handles, labels, loc=loc,prop={'size': 18})
 
 
