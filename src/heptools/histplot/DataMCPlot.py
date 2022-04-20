@@ -10,6 +10,7 @@ class Data_MC_Plot(HEP_Plot):
         super().__init__(plot_title,**kwargs) 
         self.MC_histograms = MC_histograms
         self.data_histogram = data_histogram
+        self.list_of_histograms = self.MC_histograms + [self.data_histogram]
 
         # Check the binning
         hist0 = self.MC_histograms[0].UnNorm_PyWrap_Hist
@@ -44,29 +45,36 @@ class Data_MC_Plot(HEP_Plot):
     def make_plot(self):
 
         fig,ax = plt.subplots()
-        # self.ax = ax
+        if self.Normalised:
+            hist_str = "Norm_PyWrap_Hist"
+        else:
+            hist_str = "UnNorm_PyWrap_Hist"
        
         # Plot the MC as stacked
         for i,hist in enumerate(self.MC_histograms):
             # Initialise on first iteraetion
             if i==0:
-                y2     = np.linspace(0,0,len(hist.UnNorm_PyWrap_Hist.Bin_Values)+1)
-                values = np.concatenate((hist.UnNorm_PyWrap_Hist.Bin_Values,np.asarray([0])), axis=0) 
+                arr = getattr(hist,hist_str).Bin_Values
+                y2     = np.linspace(0,0,len(arr)+1)
+                values = np.concatenate((arr,np.asarray([0])), axis=0) 
 
             # Drop the plot
-            ax = self.Data_MC_filled_hist(ax,hist.UnNorm_PyWrap_Hist,y1=values,y2=y2)
+            PH_object = getattr(hist,hist_str)
+            ax = self.Data_MC_filled_hist(ax,PH_object,y1=values,y2=y2)
 
             # Update the paramters            
             y2 = values
-            new_values    = np.concatenate((hist.UnNorm_PyWrap_Hist.Bin_Values,np.asarray([0])), axis=0)
+            new_values    = np.concatenate((PH_object.Bin_Values,np.asarray([0])), axis=0)
             values = np.sum([y2,new_values],axis=0)
-            y2 = np.concatenate((hist.UnNorm_PyWrap_Hist.Bin_Values,np.asarray([0])), axis=0)
+            y2 = np.concatenate((PH_object.Bin_Values,np.asarray([0])), axis=0)
 
 
         # Plot the data
-        ax = self.data_point(ax,self.data_histogram.UnNorm_PyWrap_Hist)
+        ax = self.data_point(ax,getattr(self.data_histogram,hist_str))
 
         self.axes = [ax]
+
+        self.do_legend()
 
         return plt
 

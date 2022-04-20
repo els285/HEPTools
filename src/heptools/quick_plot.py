@@ -60,7 +60,7 @@ def atlas_1D_ratio_plot(list_of_ROOT_histograms,**kwargs):
 
 
 
-def atlas_dataMC_plot(list_of_MC_ROOT_histograms,data_ROOT_histogram):
+def atlas_dataMC_plot(list_of_MC_ROOT_histograms,data_ROOT_histogram,**kwargs):
 
     import matplotlib.pyplot as plt
     default_colours = plt.rcParams['axes.prop_cycle'].by_key()['color']    
@@ -70,11 +70,12 @@ def atlas_dataMC_plot(list_of_MC_ROOT_histograms,data_ROOT_histogram):
         x=Histogram_Wrapper(ROOThist, name = ROOThist.GetName()  ,colour=col , legend_entry = ROOThist.GetName()) 
         list_of_MC_histograms.append(x)   
 
+
     dataPyHist = Histogram_Wrapper(data_ROOT_histogram)
 
-    p,plt = DataMCPlot.standard_ATLAS_dataMC_plot(list_of_MC_histograms,dataPyHist)
+    p,plt = DataMCPlot.standard_ATLAS_dataMC_plot(list_of_MC_histograms,dataPyHist,**kwargs)
 
-    plt.show()
-    input()
+    # plt.show()
+    # input()
 
 

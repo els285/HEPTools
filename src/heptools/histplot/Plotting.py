@@ -213,7 +213,8 @@ class HEP_Plot:
 
         """Selects the type of plot from the dictionary which effectives works as a switch"""
 
-        plot_dic = {"basic-line"        : self.Step_Line,
+        plot_dic = {"scatter-points"    : self.data_point,
+                    "basic-line"        : self.Step_Line,
                     "line-errorbar"     : self.Step_Line_Errorbar,
                     "line-filled-error" : self.Line_Filled_Errors,
                     "filled-hist"       : self.Filled_Hist,
@@ -232,9 +233,15 @@ class HEP_Plot:
         handles, labels = ax.get_legend_handles_labels()
 
         loc = kwargs["loc"] if "loc" in kwargs else "upper right"
-        labels = kwargs["labels"] if "labels" in kwargs else [HW.legend_entry for HW in self.list_of_histograms]
-        
+        if "labels" in kwargs:
+            labels = kwargs["labels"]
 
+        if all([hist.legend_entry is not None for hist in self.list_of_histograms]):
+            labels = [hist.legend_entry for hist in self.list_of_histograms]     
+     
+
+        print(labels)
+        input()
         ax.legend(handles, labels, loc=loc,prop={'size': 18})
 
 
