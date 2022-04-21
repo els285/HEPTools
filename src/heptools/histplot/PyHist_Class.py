@@ -91,6 +91,9 @@ class Histogram_Wrapper:
         self.design_dict["opacity"]            = kwargs["opacity"]          if "opacity"           in kwargs else 0.4
         self.design_dict["error_opacity"]      = kwargs["error_opacity"]    if "error_opacity"     in kwargs else 0.2
 
+        if "design_dict" in kwargs:
+            self.design_dict = dict(list(self.design_dict.items()) + list(kwargs["design_dict"].items()))
+
         # ROOT histograms
         self.UnNorm_ROOT_hist = ROOT_hist
 
