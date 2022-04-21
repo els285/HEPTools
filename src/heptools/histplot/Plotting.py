@@ -21,7 +21,6 @@ class HEP_Plot:
     Includes the design specifics and the functions for each type of histogram plot
     """
 
-
     def __init__(self,plot_title,**kwargs):
         self.plot_title = plot_title
         self.list_of_histograms = []
@@ -46,6 +45,8 @@ class HEP_Plot:
 
 
     allowed_experiment_styles = ["ATLAS","ALICE","LHCb2","CMS","ATLASTex"]
+
+    default_design_parameters = {"linewidth":2 , "linestyle":"-" , "markerstyle":"", "opacity":0.4}
 
 
     def Add_ATLAS_Label(self,label_text,**kwargs):
@@ -128,7 +129,8 @@ class HEP_Plot:
     def data_point(ax,PH):
         x_points = PH.Bin_Centres
         y_points = PH.Bin_Values
-        ax.scatter(x_points, y_points, label = 'blah',color='k')        
+        colour   = PH.colour if hasattr(PH,"colour") else 'k'
+        ax.scatter(x_points, y_points, label = 'blah',color=colour)        
         ax.errorbar(x_points,y_points,yerr=PH.Bin_Errors,ls='none',color='k')
 
         return ax
@@ -144,10 +146,10 @@ class HEP_Plot:
         x_binning = PH.Bin_Edges
         values    = np.concatenate((PH.Bin_Values,np.asarray([0])), axis=0) 
 
-
-
-        ax.plot(x_binning, values,drawstyle="steps-post",color=PH.colour,label=PH.Name,linewidth=PH.linewidth)#Hist_Wrapper.linewidth)
-        ax.vlines(x_binning[0],0,values[0],color=PH.colour,linewidth=PH.linewidth)#Hist_Wrapper.linewidth)
+        ax.plot(x_binning, values,drawstyle="steps-post",label=PH.Name,
+                    color=PH.design_dict["colour"],  linewidth=PH.design_dict["linewidth"],  linestyle=PH.design_dict["line_style"])
+        ax.vlines(x_binning[0],0,values[0],
+                    color=PH.design_dict["colour"],linewidth=PH.design_dict["linewidth"] , linestyle = PH.design_dict["line_style"])
 
         return ax
 
@@ -161,18 +163,19 @@ class HEP_Plot:
 
         x_binning = PH.Bin_Edges
         values    = np.concatenate((PH.Bin_Values,np.asarray([0])), axis=0) 
-        ax.vlines(x_binning[0],0,values[0],color=PH.colour,linewidth=PH.linewidth,alpha=0)#Hist_Wrapper.linewidth)
+        ax.vlines(x_binning[0],0,values[0],
+                color=PH.design_dict["colour"],linewidth=PH.design_dict["linewidth"],alpha=0)#Hist_Wrapper.linewidth)
 
         # Required for the legend handles
 
-        ax.plot(x_binning, values,drawstyle="steps-post",color=PH.colour,label=PH.Name,linewidth=PH.linewidth,alpha=0)#Hist_Wrapper.linewidth)
+        ax.plot(x_binning, values,drawstyle="steps-post",label=PH.name,color=PH.design_dict["colour"],linewidth=PH.design_dict["linewidth"],alpha=0)#Hist_Wrapper.linewidth)
 
         # The actual histogram filling
         if "y2" in kwargs:
             y2 = kwargs["y2"]
-            ax.fill_between(x_binning,values,y2,step="post", alpha=0.4,color=PH.colour)
+            ax.fill_between(x_binning,values,y2,step="post", alpha=PH.design_dict["opacity"],color=PH.design_dict["colour"])
         else:
-            ax.fill_between(x_binning,values,step="post", alpha=0.4,color=PH.colour)
+            ax.fill_between(x_binning,values,step="post", alpha=PH.design_dict["opacity"],color=PH.design_dict["colour"])
 
         return ax        
 
@@ -185,7 +188,7 @@ class HEP_Plot:
         """
         ax = HEP_Plot.Step_Line(ax,PH)
 
-        ax.errorbar(PH.Bin_Centres,PH.Bin_Values,PH.Bin_Errors,elinewidth=PH.linewidth,ecolor=PH.colour,fmt='',xerr=None,linestyle='')
+        ax.errorbar(PH.Bin_Centres,PH.Bin_Values,PH.Bin_Errors,elinewidth=PH.design_dict["linewidth"],ecolor=PH.design_dict["colour"],fmt='',xerr=None,linestyle='')
 
         return ax
 
@@ -204,7 +207,7 @@ class HEP_Plot:
             ax.fill_between(x=[PH.Bin_Edges[i],PH.Bin_Edges[i+1]],
                             y1=PH.Bin_Values[i]+PH.Bin_Errors[i],
                             y2=PH.Bin_Values[i]-PH.Bin_Errors[i],
-                            color=PH.colour,alpha=0.2)
+                            color=PH.design_dict["colour"],alpha=PH.design_dict["error_opacity"])
 
         return ax
 
@@ -233,6 +236,7 @@ class HEP_Plot:
         handles, labels = ax.get_legend_handles_labels()
 
         loc = kwargs["loc"] if "loc" in kwargs else "upper right"
+
         if "labels" in kwargs:
             labels = kwargs["labels"]
 
@@ -240,6 +244,8 @@ class HEP_Plot:
             labels = [hist.legend_entry for hist in self.list_of_histograms]     
      
         ax.legend(handles, labels, loc=loc,prop={'size': 18})
+        
+        return ax
 
 
 

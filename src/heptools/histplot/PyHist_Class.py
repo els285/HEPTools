@@ -23,13 +23,9 @@ class PyHist:
         self.Bin_Centres = Bin_Centres 
         self.Bin_Edges   = Bin_Edges   
 
-        # Plot meta-data
-        self.colour       = kwargs["colour"]       if "colour"       in kwargs else "blue"
-        self.linewidth    = kwargs["linewdith"]    if "linewdith"    in kwargs else 1.5
-        self.legend_entry = kwargs["legend_entry"] if "legend_entry" in kwargs else ""
-
-
-
+         # Plotting information
+        self.legend_entry       = kwargs["legend_entry"]     if "legend_entry"      in kwargs else self.Name
+        self.design_dict = kwargs["design_dict"]
 
 
 
@@ -85,25 +81,29 @@ class Histogram_Wrapper:
         self.file_name          = kwargs["filename"]         if "filename"          in kwargs else None
 
         # Plotting information
-        self.legend_entry       = kwargs["legend_entry"]     if "legend_entry"      in kwargs else ""
-        self.colour             = kwargs["colour"]           if "colour"            in kwargs else None
-        self.linewidth          = kwargs["linewidth"]        if "linewidth"         in kwargs else 2
+        self.legend_entry       = kwargs["legend_entry"]     if "legend_entry"      in kwargs else self.name
+        
+        self.design_dict = {}
+        self.design_dict["colour"]             = kwargs["colour"]           if "colour"            in kwargs else None
+        self.design_dict["linewidth"]          = kwargs["linewidth"]        if "linewidth"         in kwargs else 2
+        self.design_dict["line_style"]         = kwargs["line_style"]       if "line_style"        in kwargs else "-"
+        self.design_dict["marker_style"]       = kwargs["marker_style"]     if "marker_style"      in kwargs else ""
+        self.design_dict["opacity"]            = kwargs["opacity"]          if "opacity"           in kwargs else 0.4
+        self.design_dict["error_opacity"]      = kwargs["error_opacity"]    if "error_opacity"     in kwargs else 0.2
 
         # ROOT histograms
         self.UnNorm_ROOT_hist = ROOT_hist
 
 
         # Unnormalised Hist wrapper
-        self.UnNorm_PyWrap_Hist = self.Create_Wrapper(ROOT_hist,self.name+"_Unnormalised",
-            colour=self.colour,legend_entry=self.legend_entry,linewidth=self.linewidth)
+        self.UnNorm_PyWrap_Hist = self.Create_Wrapper(ROOT_hist,self.name+"_Unnormalised",legend_entry=self.legend_entry,design_dict=self.design_dict)
 
         # Normalising histograms should depend on if histogram is empty or not
         if ROOT_hist.Integral()!=0.0:
             norm_hist = self.Compute_Normalised(ROOT_hist)
             self.Norm_ROOT_hist   = norm_hist 
             # Normalised Hist wrapper
-            self.Norm_PyWrap_Hist   = self.Create_Wrapper(norm_hist,self.name+"_Normalised",
-                colour=self.colour,legend_entry=self.legend_entry,linewidth=self.linewidth)
+            self.Norm_PyWrap_Hist   = self.Create_Wrapper(norm_hist,self.name+"_Normalised",legend_entry=self.legend_entry,design_dict=self.design_dict)
 
 
 

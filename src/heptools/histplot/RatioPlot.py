@@ -29,9 +29,13 @@ class Ratio_Plot_ROOT(HEP_Plot):
     def Construct_Ratio_Histograms(self,hist_type):   
 
         self.list_of_ratio_histograms = []
-
+ 
         for HW in self.list_of_histograms:
-            hist = self.Compute_Ratio(getattr(HW,hist_type),getattr(self.divisor,hist_type))
+        #     if self.divisor=="self":
+        #         divisor_histogram = HW
+        #     else:
+            divisor_histogram = self.divisor
+            hist = self.Compute_Ratio(getattr(HW,hist_type),getattr(divisor_histogram,hist_type))
             wrapped=Histogram_Wrapper.Create_Wrapper(hist,HW.name,colour=HW.colour,linewidth=HW.linewidth)
             self.list_of_ratio_histograms.append(wrapped)
 
@@ -62,9 +66,9 @@ class Ratio_Plot_ROOT(HEP_Plot):
 
 
     def Identical_Plotting(self,ax,rax,plotting_function):
-        for PH in self.list_of_histograms:
-            HW = PH.Norm_PyWrap_Hist if self.Normalised else PH.UnNorm_PyWrap_Hist
-            plotting_function(ax,HW)
+        for HW in self.list_of_histograms:
+            PH = HW.Norm_PyWrap_Hist if self.Normalised else HW.UnNorm_PyWrap_Hist
+            plotting_function(ax,PH)
 
         for HW in self.list_of_ratio_histograms:
             plotting_function(rax,HW)
