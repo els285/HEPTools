@@ -61,6 +61,11 @@ class HEP_Plot:
             if loc == 1:
                 yaxis_limits = ax.get_ylim()
                 ax.set_ylim(yaxis_limits[0],yaxis_limits[1]*1.2)
+
+            # Doesnt seem to work with Python3.6            
+            # data = kwargs["data"] if "data" in kwargs else False 
+            # lumi = kwargs["lumi"] if "lumi" in kwargs else None 
+            # year = kwargs["year"] if "year" in kwargs else None
             l1 = hep.atlas.text(label_text,ax=ax,loc=loc)
 
             if "specific_location" in kwargs:
@@ -71,6 +76,14 @@ class HEP_Plot:
                 l1[0]._y = kwargs["specific_location"][1]
                 l1[1]._x = kwargs["specific_location"][0] + x_diff
                 l1[1]._y = kwargs["specific_location"][1] + y_diff
+
+            if "meta_data" in kwargs:
+                meta_data_string = r"$\sqrt{s} = com $ TeV, lumi $fb^{-1}$ "
+                meta_data_string = meta_data_string.replace("com",str(kwargs["meta_data"]["com"]))
+                meta_data_string = meta_data_string.replace("lumi",str(kwargs["meta_data"]["lumi"]))
+            else:
+                meta_data_string = None
+            ax.text(l1[1]._x,l1[1]._y-0.1,meta_data_string,transform=ax.transAxes,fontsize=16)
 
  
     def Initialise_LHC_Plot(self,experiment):

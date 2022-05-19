@@ -37,6 +37,6 @@ def standard_ATLAS_plot(input_histograms,**kwargs):
     p.Initialise_Plot_Design("ATLAS")
 
     plt,ax,rax = p.make_plot("line-errorbar")
-    p.Add_ATLAS_Label("Internal")
+    p.Add_ATLAS_Label("Internal Simulation",meta_data = {"com":13,"lumi":139})
 
     return p,plt
