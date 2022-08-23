@@ -12,6 +12,12 @@ def bin_edges(hist):
 def bin_centres(hist):
     return np.asarray([hist.GetXaxis().GetBinCenter(binn+1) for binn in range(0,hist.GetNbinsX())])
 
+def normalise(hist):
+    """ Takes a ROOT histogram and normalised it"""
+    h1dN = hist.Clone(hist.GetName()+"_norm")
+    h1dN.Scale(1/hist.Integral())
+    return h1dN    
+
 
 def compute_ratio(ROOT_hist_numer,ROOT_hist_denom):
 
@@ -25,3 +31,9 @@ def key_names(file):
 
 def branch_names(ttree):
     return [k.GetName() for k in ttree.GetListOfBranches()]        
+
+
+def merge_dataframes(dfs,common_key: str):
+    import functools 
+    import pandas as pd
+    return functools.reduce(lambda left, right: pd.merge(left, right, on=common_key), dfs)
