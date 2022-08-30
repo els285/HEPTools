@@ -1,5 +1,9 @@
 import numpy as np
 
+##############################################################
+###---                 ROOT-based tools                 ---###
+##############################################################
+
 def bin_values(hist):
     return np.asarray([hist.GetBinContent(binn+1) for binn in range(0,hist.GetNbinsX())])
 
@@ -18,7 +22,6 @@ def normalise(hist):
     h1dN.Scale(1/hist.Integral())
     return h1dN    
 
-
 def compute_ratio(ROOT_hist_numer,ROOT_hist_denom):
 
     d_hist = ROOT_hist_numer.Clone()
@@ -32,6 +35,12 @@ def key_names(file):
 def branch_names(ttree):
     return [k.GetName() for k in ttree.GetListOfBranches()]        
 
+
+
+
+##############################################################
+###---               scikit-HEP-based tools             ---###
+##############################################################
 
 def merge_dataframes(dfs,common_key: str):
     import functools 
@@ -79,6 +88,8 @@ def friend_ROOT_trees(inputs,**kwargs):
         dfs.append(final)
 
     df_out = functools.reduce(lambda left, right: pd.merge(left, right, how="inner",on=common_key), dfs)
+    column_names = {df_out.columns[og]:new for og,new in enumerate([t[1] for t in inputs])}
+    df_final = df_out.rename(columns=column_names)#, inplace=True)
     return df_out
 
 
