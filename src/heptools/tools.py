@@ -41,10 +41,17 @@ def merge_dataframes(dfs,common_key: str):
 
 def friend_ROOT_trees(inputs,**kwargs):
 
+    """
+    Takes input of form: [(file1,tree1),(file2,tree2),...]
+    Collects all matched events in dataframe - default collection key is "eventNumber"
+    """
+
     import uproot
     import awkward as ak
     import functools
     import pandas as pd
+
+    common_key = kwargs["common_key"] if "common_key" in kwargs else "eventNumber"
 
     dfs = []
 
@@ -54,7 +61,7 @@ def friend_ROOT_trees(inputs,**kwargs):
 
         # Extract the eventNumber TBranch as a pandas DataFrame
         with uproot.open(f"{filename}:{treename}") as events:
-            eventNumbers = events.arrays(["eventNumber"],library="pd")
+            eventNumbers = events.arrays([common_key],library="pd")
         eN = eventNumbers.reset_index(level=1, drop=True)
 
         # Extract the full desired Branches as awkward array, and parse
@@ -67,11 +74,11 @@ def friend_ROOT_trees(inputs,**kwargs):
 
         # Merge and set eventNumber as index
         merged = pd.concat([eN,dff],axis=1)
-        final = merged.set_index(["eventNumber"])
+        final = merged.set_index([common_key])
 
         dfs.append(final)
 
-    df_out = functools.reduce(lambda left, right: pd.merge(left, right, how="inner",on='eventNumber'), dfs)
+    df_out = functools.reduce(lambda left, right: pd.merge(left, right, how="inner",on=common_key), dfs)
     return df_out
 
 
