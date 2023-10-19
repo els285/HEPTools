@@ -12,7 +12,10 @@ class LHEparse:
     """
     Class for parsing LHE files to lists of 4vectors, awkward arrays and
     eventually ROOT files
-    
+    Particles are identified by the pdgid number as defined in the class
+    dictionary PDGID
+    Args:
+    - 
     """
       
     PDGID = {
@@ -47,6 +50,10 @@ class LHEparse:
 
     def generate_list_of_4vectors(self):
 
+        """
+        
+        """
+
         processed_event_template = {v:[] for v in self.PDGID.values()}
 
         list_of_events = []
@@ -66,3 +73,9 @@ class LHEparse:
         else:
             return ak.Array(self.list_of_events)
 
+
+
+def parse_LHE_file(filename):
+     ParseObject = LHEparse(filename)
+     ParseObject.generate_list_of_4vectors()
+     return ParseObject.list_of_events 
