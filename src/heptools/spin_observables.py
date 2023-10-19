@@ -1,5 +1,12 @@
 import vector 
 
+
+""""
+Non--ROOT-based tools for computing particular angular observables from which
+the spin density matrix elements can be extracted
+
+"""
+
 def boost_to_parent_tops(top:'MomentumObject4D',anti_top:'MomentumObject4D',
              leptonP:'MomentumObject4D',leptonM:'MomentumObject4D'):
     
@@ -68,10 +75,6 @@ def cos_r(Kdirection,leptonP_direction,leptonM_direction):
     return cos_plus, cos_minus
 
 
-def cos_phi(leptonP_direction,leptonM_direction):
-    return leptonP_direction.dot(leptonM_direction)
-
-
 
 def helicity_basis_angular_observables(top,antitop,lepP,lepM):
 
@@ -84,8 +87,15 @@ def helicity_basis_angular_observables(top,antitop,lepP,lepM):
     obs["cos_k_p"], obs["cos_k_m"] = cos_k(Kdirection,lepP_direction,lepM_direction)
     obs["cos_n_p"], obs["cos_n_m"] = cos_n(Kdirection,lepP_direction,lepM_direction)
     obs["cos_r_p"], obs["cos_r_m"] = cos_r(Kdirection,lepP_direction,lepM_direction)
-    obs["cos_phi"]                 = cos_phi(lepP_direction,lepM_direction)
+    obs["cos_phi"]                 = lepP_direction.dot(lepM_direction)
     return obs
+
+
+def cos_phi(top,antitop,lepP,lepM):
+
+    Kdirection, lepP_direction, lepM_direction = boost_to_parent_tops(top,antitop,lepP,lepM)
+    return lepP_direction.dot(lepM_direction)
+
 
 def lab_frame_cos_phi(lepP,lepM):
     return lepP.to_beta3().unit().dot(lepM.to_beta3().unit())
