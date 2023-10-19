@@ -6,11 +6,12 @@ A collection of Python tools for high-energy particle physics analyses.
 Some tools require `ROOT` whilst others require parts of the `Scikit-HEP` package.
 Recommended to use a modern version of Python >=3.7.
 
-A Python3.9 + ROOT environment can achieved in lxplus through commands
+A Python3.9 + ROOT environment can achieved in `lxplus` through commands
 ```bash
 setupATLAS -q
 lsetup "views LCG_101 x86_64-centos7-gcc8-opt" --quiet
 ```
+and then by opening a virtual environment in which Python modules can be pip-installed.
 
 ## Installation
 
