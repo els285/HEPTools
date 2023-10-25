@@ -109,12 +109,12 @@ def compute_spin_parameters(observable_array):
     CnkP = Cnk + Ckn 
     CknM = Cnk - Ckn
 
-    BkP = -3*observable_array["cos_K_plus"][:,0].to_numpy()
-    BkM = -3*observable_array["cos_K_minus"][:,0].to_numpy()
-    BnP = -3*observable_array["cos_N_plus"][:,0].to_numpy()
-    BnM = -3*observable_array["cos_N_minus"][:,0].to_numpy()
-    BrP = -3*observable_array["cos_R_plus"][:,0].to_numpy()
-    BrM = -3*observable_array["cos_R_minus"][:,0].to_numpy()
+    BkP = -3*observable_array["cos_K_plus"][:,0].to_numpy().mean()
+    BkM = -3*observable_array["cos_K_minus"][:,0].to_numpy().mean()
+    BnP = -3*observable_array["cos_N_plus"][:,0].to_numpy().mean()
+    BnM = -3*observable_array["cos_N_minus"][:,0].to_numpy().mean()
+    BrP = -3*observable_array["cos_R_plus"][:,0].to_numpy().mean()
+    BrM = -3*observable_array["cos_R_minus"][:,0].to_numpy().mean()
 
     return {"Ckk"       : Ckk,
             "Cnn"       : Cnn,
