@@ -5,6 +5,12 @@ import numpy as np
 
 def parse_and_boost(filename: str):
 
+    """
+    Parses the LHE file
+    Selects the correct objects per-event based on the PDGID
+    Performs the relevant boosts and scalar products to return the cos-variables
+    """
+
     array = pylhe.to_awkward(pylhe.read_lhe_with_attributes('events.lhe'))
 
     # Pull out the relevant particle 4-vectors
@@ -42,6 +48,11 @@ def parse_and_boost(filename: str):
 
 def helicity_basis_observables(Kdirection, leptonP_direction, leptonM_direction):
 
+    """
+    The helicity basis is a basis used in the measurement of spin observables at
+    the LHC
+    """
+
     # Kinematics
     z     = vector.obj(x=0,y=0,z=1)
     cos_T = z.dot(Kdirection)
@@ -75,8 +86,12 @@ def helicity_basis_observables(Kdirection, leptonP_direction, leptonM_direction)
     return helicity_observables
 
 
+def compute_spin_parameters(observable_array):
 
-def compute_polarisations_correlations(observable_array):
+    """
+    Computes the spin parameters (C_{i,j}, B_k^{+/-})
+    """
+
     Ckk = -9*(np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy()).mean())
     Cnn = -9*(np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy()).mean())
     Crr = -9*(np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy()).mean())
@@ -120,43 +135,62 @@ def compute_polarisations_correlations(observable_array):
 
 def histograms(observable_array, Nbins:int=10 ):
 
-    import boost_histogram as bh
+    """
+    Use the cosvariable arrays to build the relevant angular observable
+    histograms
+    Args:
+    - Observable_array: awkward-array of the cos-variables
+    - Nbins: integer defining the binning (optional)
+    """
 
-    DH = {}
+    import boostogram as bh
 
-    DH["Ckk_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["Cnn_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["Crr_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["Crk_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["Ckr_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["Cnr_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["Crn_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["Cnk_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["Ckn_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
+    DH = {  "Ckk"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "Cnn"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "Crr"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "CrkP"      : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "CrkM"      : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "CnrP"      : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "CnrM"      : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "CnkP"      : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "CknM"      : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "BkP"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "BkM"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "BnP"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "BnM"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "BrP"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "BrM"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
+            "cos_phi"   : bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
+    }
 
-    DH["Ckk_hist"].Fill(np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy()))
-    DH["Cnn_hist"].Fill(np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy()))
-    DH["Crr_hist"].Fill(np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy()))
-    DH["Crk_hist"].Fill(np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy()))
-    DH["Ckr_hist"].Fill(np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy()))
-    DH["Cnr_hist"].Fill(np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy()))
-    DH["Crn_hist"].Fill(np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy()))
-    DH["Cnk_hist"].Fill(np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy()))
-    DH["Ckn_hist"].Fill(np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy()) )
+    # Diagonal terms
+    DH["Ckk"].Fill(np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy()))
+    DH["Cnn"].Fill(np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy()))
+    DH["Crr"].Fill(np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy()))
 
+    # Cross-terms
+    Crk = np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy())
+    Ckr = np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy())
+    Cnr = np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy())
+    Crn = np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy())
+    Cnk = np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy())
+    Ckn = np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy())
 
-    DH["BkP_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["BkM_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["BnP_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["BnM_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["BrP_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
-    DH["BrM_hist"] = bh.Histogram(bh.axis.Regular(Nbins, -1, +1))
+    DH["Crk"].Fill(Crk + Ckr)
+    DH["Ckr"].Fill(Crk - Ckr)
+    DH["Cnr"].Fill(Cnr + Crn)
+    DH["Crn"].Fill(Cnr - Crn)
+    DH["Cnk"].Fill(Cnk + Ckn)
+    DH["Ckn"].Fill(Cnk - Ckn)
 
-    DH["BkP_hist"].Fill(observable_array["cos_K_plus"][:,0].to_numpy())
-    DH["BkM_hist"].Fill(observable_array["cos_K_minus"][:,0].to_numpy())
-    DH["BnP_hist"].Fill(observable_array["cos_N_plus"][:,0].to_numpy())
-    DH["BnM_hist"].Fill(observable_array["cos_N_minus"][:,0].to_numpy())
-    DH["BrP_hist"].Fill(observable_array["cos_R_plus"][:,0].to_numpy())
-    DH["BrM_hist"].Fill(observable_array["cos_R_minus"][:,0].to_numpy())
+    # Polarisations
+    DH["BkP"].Fill(observable_array["cos_K_plus"][:,0].to_numpy())
+    DH["BkM"].Fill(observable_array["cos_K_minus"][:,0].to_numpy())
+    DH["BnP"].Fill(observable_array["cos_N_plus"][:,0].to_numpy())
+    DH["BnM"].Fill(observable_array["cos_N_minus"][:,0].to_numpy())
+    DH["BrP"].Fill(observable_array["cos_R_plus"][:,0].to_numpy())
+    DH["BrM"].Fill(observable_array["cos_R_minus"][:,0].to_numpy())
+
+    DH["cos_phi"].Fill(observable_array["cos_phi"][:,0].to_numpy())
 
     return DH
