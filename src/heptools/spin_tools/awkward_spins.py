@@ -3,12 +3,12 @@ import pylhe
 import vector 
 import numpy as np
 
-def parse_and_boost(filename: str):
+
+def parse(filename: str):
 
     """
-    Parses the LHE file
-    Selects the correct objects per-event based on the PDGID
-    Performs the relevant boosts and scalar products to return the cos-variables
+    Parses the LHE and generates an awkward array of the top, anti-top and
+    charged leptons Momentum4D vectors
     """
 
     array = pylhe.to_awkward(pylhe.read_lhe_with_attributes('events.lhe'))
@@ -23,6 +23,26 @@ def parse_and_boost(filename: str):
 
     leptonP = ak.concatenate([pos_elec,pos_mu],axis=1)
     leptonM = ak.concatenate([neg_elec,neg_mu],axis=1)
+
+    return  ak.zip({
+            "eventinfo": array.eventinfo,
+            "tops": top,
+            "anti_tops": anti_top,
+            "pos_leptons": leptonP,
+            "neg_leptons": leptonM
+        }, depth_limit=1, with_name="Event")
+
+
+def boost(arr: "pylhe.awkward.EventArray"):
+
+    """
+    Performs the relevant boosts and scalar products to return the cos-variables
+    """
+
+    top      = arr["tops"]
+    anti_top = arr["anti_tops"]
+    leptonP  = arr["pos_leptons"]
+    leptonM  = arr["neg_leptons"]
 
     # Build ttbar system
     ttbar = top + anti_top 
@@ -143,7 +163,7 @@ def histograms(observable_array, Nbins:int=10 ):
     - Nbins: integer defining the binning (optional)
     """
 
-    import boostogram as bh
+    import boost_histogram as bh
 
     DH = {  "Ckk"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
             "Cnn"       : bh.Histogram(bh.axis.Regular(Nbins, -1, +1)),
@@ -164,9 +184,9 @@ def histograms(observable_array, Nbins:int=10 ):
     }
 
     # Diagonal terms
-    DH["Ckk"].Fill(np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy()))
-    DH["Cnn"].Fill(np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy()))
-    DH["Crr"].Fill(np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy()))
+    DH["Ckk"].fill(np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy()))
+    DH["Cnn"].fill(np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy()))
+    DH["Crr"].fill(np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_R_minus"][:,0].to_numpy()))
 
     # Cross-terms
     Crk = np.multiply(observable_array["cos_R_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy())
@@ -176,21 +196,21 @@ def histograms(observable_array, Nbins:int=10 ):
     Cnk = np.multiply(observable_array["cos_N_plus"][:,0].to_numpy() , observable_array["cos_K_minus"][:,0].to_numpy())
     Ckn = np.multiply(observable_array["cos_K_plus"][:,0].to_numpy() , observable_array["cos_N_minus"][:,0].to_numpy())
 
-    DH["Crk"].Fill(Crk + Ckr)
-    DH["Ckr"].Fill(Crk - Ckr)
-    DH["Cnr"].Fill(Cnr + Crn)
-    DH["Crn"].Fill(Cnr - Crn)
-    DH["Cnk"].Fill(Cnk + Ckn)
-    DH["Ckn"].Fill(Cnk - Ckn)
+    DH["CrkP"].fill(np.add(Crk,Ckr))
+    DH["CrkM"].fill(np.add(Crk,-Ckr))
+    DH["CnrP"].fill(np.add(Cnr,Crn))
+    DH["CnrM"].fill(np.add(Cnr,-Crn))
+    DH["CnkP"].fill(np.add(Cnk,Ckn))
+    DH["CknM"].fill(np.add(Cnk,-Ckn))
 
     # Polarisations
-    DH["BkP"].Fill(observable_array["cos_K_plus"][:,0].to_numpy())
-    DH["BkM"].Fill(observable_array["cos_K_minus"][:,0].to_numpy())
-    DH["BnP"].Fill(observable_array["cos_N_plus"][:,0].to_numpy())
-    DH["BnM"].Fill(observable_array["cos_N_minus"][:,0].to_numpy())
-    DH["BrP"].Fill(observable_array["cos_R_plus"][:,0].to_numpy())
-    DH["BrM"].Fill(observable_array["cos_R_minus"][:,0].to_numpy())
+    DH["BkP"].fill(observable_array["cos_K_plus"][:,0].to_numpy())
+    DH["BkM"].fill(observable_array["cos_K_minus"][:,0].to_numpy())
+    DH["BnP"].fill(observable_array["cos_N_plus"][:,0].to_numpy())
+    DH["BnM"].fill(observable_array["cos_N_minus"][:,0].to_numpy())
+    DH["BrP"].fill(observable_array["cos_R_plus"][:,0].to_numpy())
+    DH["BrM"].fill(observable_array["cos_R_minus"][:,0].to_numpy())
 
-    DH["cos_phi"].Fill(observable_array["cos_phi"][:,0].to_numpy())
+    DH["cos_phi"].fill(observable_array["cos_phi"][:,0].to_numpy())
 
     return DH
