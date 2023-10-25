@@ -59,13 +59,16 @@ def helicity_basis_observables(Kdirection, leptonP_direction, leptonM_direction)
     cos_R_plus  = mask*Rdirection.dot(leptonP_direction)
     cos_R_minus = -mask*Rdirection.dot(leptonM_direction) 
 
+    cos_phi     = leptonP_direction.dot(leptonM_direction)
+
     helicity_observables = ak.zip({
     "cos_K_plus"  :  cos_K_plus,
     "cos_K_minus" :  cos_K_minus,
     "cos_N_plus"  :  cos_N_plus,
     "cos_N_minus" :  cos_N_minus,
     "cos_R_plus"  :  cos_R_plus,
-    "cos_R_minus" :  cos_R_minus
+    "cos_R_minus" :  cos_R_minus,
+    "cos_phi"     :  cos_phi 
     }, depth_limit=1, with_name="Event")
 
     return helicity_observables
