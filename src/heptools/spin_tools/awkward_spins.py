@@ -2,7 +2,8 @@ import awkward as ak
 import pylhe
 import vector 
 import numpy as np
-
+import sys
+import time 
 
 def parse(filename: str):
 
@@ -10,27 +11,28 @@ def parse(filename: str):
     Parses the LHE and generates an awkward array of the top, anti-top and
     charged leptons Momentum4D vectors
     """
-
     array = pylhe.to_awkward(pylhe.read_lhe_with_attributes('events.lhe'))
 
     # Pull out the relevant particle 4-vectors
-    top            = array.particles[array.particles.id == 6]["vector"]
-    anti_top       = array.particles[array.particles.id==-6]["vector"]
-    pos_elec       = array.particles[array.particles.id==11]["vector"]
-    neg_elec       = array.particles[array.particles.id==-11]["vector"]
-    pos_mu         = array.particles[array.particles.id==13]["vector"]
-    neg_mu         = array.particles[array.particles.id==-13]["vector"]
+    top            = array.particles[array.particles.id == 6] ["vector"]
+    anti_top       = array.particles[array.particles.id ==-6] ["vector"]
+    pos_elec       = array.particles[array.particles.id ==-11]["vector"]
+    neg_elec       = array.particles[array.particles.id ==11] ["vector"]
+    pos_mu         = array.particles[array.particles.id ==-13]["vector"]
+    neg_mu         = array.particles[array.particles.id ==13] ["vector"]
 
     leptonP = ak.concatenate([pos_elec,pos_mu],axis=1)
     leptonM = ak.concatenate([neg_elec,neg_mu],axis=1)
 
-    return  ak.zip({
+    out = ak.zip({
             "eventinfo": array.eventinfo,
             "tops": top,
             "anti_tops": anti_top,
             "pos_leptons": leptonP,
             "neg_leptons": leptonM
         }, depth_limit=1, with_name="Event")
+    
+    return  out 
 
 
 def boost(arr: "pylhe.awkward.EventArray"):
@@ -58,7 +60,7 @@ def boost(arr: "pylhe.awkward.EventArray"):
     leptonM_in_antitop = leptonM_in_CoM.boostCM_of(antitop_in_CoM)
 
     # Compute the unit 3-vector directions
-    Kdirection = top_in_CoM.to_beta3().unit()
+    Kdirection        = top_in_CoM.to_beta3().unit()
     leptonP_direction = leptonP_in_top.to_beta3().unit()
     leptonM_direction = leptonM_in_antitop.to_beta3().unit()
 
@@ -214,3 +216,4 @@ def histograms(observable_array, Nbins:int=10 ):
     DH["cos_phi"].fill(observable_array["cos_phi"][:,0].to_numpy())
 
     return DH
+
