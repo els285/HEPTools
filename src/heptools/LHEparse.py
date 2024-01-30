@@ -45,6 +45,7 @@ class LHEparse:
 
     def __init__(self , file_name:str):
         self.file_name      = file_name
+        print(f"Parsing LHE file {self.file_name}")
         self.array            =  pylhe.to_awkward(pylhe.read_lhe_with_attributes(self.file_name))
 
 
