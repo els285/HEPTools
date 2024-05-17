@@ -1,15 +1,23 @@
 # HEPTools
 
-A collection of tools for high-energy particle physics analyses.
+A collection of Python tools for high-energy particle physics analyses.
 
-**Crucial: ROOT is required to be installed and compatible with Python3. I only have ROOT built for Python3.6**
+## Requirements
+Some tools require `ROOT` whilst others require parts of the `Scikit-HEP` package.
+Recommended to use a modern version of Python >=3.7.
 
+A Python3.9 + ROOT environment can achieved in `lxplus` through commands
+```bash
+setupATLAS -q
+lsetup "views LCG_101 x86_64-centos7-gcc8-opt" --quiet
+```
+and then by opening a virtual environment in which Python modules can be pip-installed.
 
 ## Installation
 
 Install via
 ```
-python3.6 -m pip install git+https://github.com/ethansimpson285/HEPTools
+python3 -m pip install git+https://github.com/ethansimpson285/HEPTools
 ```
 
 
